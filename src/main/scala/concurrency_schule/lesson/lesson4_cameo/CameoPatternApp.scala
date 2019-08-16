@@ -9,6 +9,7 @@ import concurrency_schule.lesson.lesson4_cameo.Second.SecondResponse
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.{Failure, Success}
 
 object CameoPatternApp extends App {
   implicit val actorSystem: ActorSystem = ActorSystem.create("ActorSystem")
@@ -23,11 +24,15 @@ object CameoPatternApp extends App {
 
   val eventualResult = app.getRendezvousResult()
 
-  val result = Await.result(eventualResult, Duration.Inf)
+  eventualResult.onComplete {
+    case Success(result) =>
+      println(result)
+      sys.exit()
+    case Failure(exception) =>
+      println(exception)
+      sys.exit(1)
+  }
 
-  println(result)
-
-  sys.exit()
 }
 
 import akka.pattern.ask

@@ -12,7 +12,7 @@ trait Ensemble {
   log("Creating actor system")
   implicit val actorSystem: ActorSystem = ActorSystem.create("ActorSystem")
   implicit val ec: ExecutionContext = actorSystem.dispatcher
-  implicit val timeout: Timeout = Timeout(500 millis)
+  implicit val timeout: Timeout = Timeout(1 minute)
 
   sys.addShutdownHook {
     log("Shutting down actor system and executionContext")

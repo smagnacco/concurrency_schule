@@ -37,8 +37,9 @@ object LordOfTheRingsApp extends App with SimpleLog {
 
   println(s"->>>> The best team ever: $l  ->>>>>>" )
 
-  sys.exit()
-
+  eventualHobbitTeam.onComplete {
+    sys.exit()
+  }
 }
 
 class MiddleEarth extends Actor {
