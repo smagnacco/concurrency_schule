@@ -6,8 +6,8 @@ import concurrency_schule.lesson.lesson4_cameo.Cameo.{DoYourMagic, Finished}
 import concurrency_schule.lesson.lesson4_cameo.First.FirstResponse
 import concurrency_schule.lesson.lesson4_cameo.Second.SecondResponse
 
-import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
 
@@ -22,7 +22,7 @@ object CameoPatternApp extends App {
 
   val app = new CameoExampleApp()
 
-  val eventualResult = app.getRendezvousResult()
+  val eventualResult: Future[Rendezvous] = app.getRendezvousResult()
 
   eventualResult.onComplete {
     case Success(result) =>
@@ -52,7 +52,7 @@ class Cameo extends Actor {
   var first: Option[String] = None
   var second: Option[String] = None
   var continuation: Option[ActorRef] = None
-  context.system.scheduler.scheduleOnce(10 milliseconds, self, Finished)
+  context.system.scheduler.scheduleOnce(80 milliseconds, self, Finished)
 
   override def receive: Receive = {
     case DoYourMagic ⇒
@@ -87,11 +87,17 @@ object Cameo {
 
 case class Rendezvous(first: Option[String], second: Option[String])
 
-class First extends Actor {
+trait Behavior {
+  def upper(algo: String): String = {
+    algo.toLowerCase
+  }
+}
+
+class First extends Actor with Behavior{
   override def receive: Receive = {
     case DoYourMagic ⇒
-      //Thread.sleep(50)
-      sender() ! FirstResponse("First")
+      Thread.sleep(50)
+      sender() ! FirstResponse(upper("first"))
   }
 }
 object First {

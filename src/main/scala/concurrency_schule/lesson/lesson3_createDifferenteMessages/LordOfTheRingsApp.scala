@@ -1,13 +1,13 @@
 package concurrency_schule.lesson.lesson3_createDifferenteMessages
 
 import akka.actor.{Actor, ActorSystem, Props}
-import util.SimpleLog
 import akka.pattern.ask
 import akka.util.Timeout
-import concurrency_schule.lesson.lesson3_createDifferenteMessages.MiddleEarth.{AddHobbit, AddWizard, GetHobbitTeam, HobbitTeam}
+import concurrency_schule.lesson.lesson3_createDifferenteMessages.MiddleEarth._
+import util.SimpleLog
 
-import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.language.postfixOps
 
 object LordOfTheRingsApp extends App with SimpleLog {
@@ -36,10 +36,15 @@ object LordOfTheRingsApp extends App with SimpleLog {
   val l = Await.result(eventualHobbitTeam.mapTo[HobbitTeam], Duration.Inf)
 
   println(s"->>>> The best team ever: $l  ->>>>>>" )
+  val eventualWizzards: Future[Wizzards] = (middleEarthMailbox ? GetWizzards).mapTo[Wizzards]
 
-  eventualHobbitTeam.onComplete {
+  eventualWizzards.foreach(w => println(w.team) )
+
+  Future.sequence(List(eventualHobbitTeam, eventualWizzards)).onComplete {
     sys.exit()
   }
+
+
 }
 
 class MiddleEarth extends Actor {
@@ -56,6 +61,7 @@ class MiddleEarth extends Actor {
       hobbits = name :: hobbits
 
     case GetHobbitTeam ⇒ sender() ! HobbitTeam(hobbits)
+    case GetWizzards => sender() ! Wizzards(wizards)
 
   }
 
@@ -67,5 +73,7 @@ object MiddleEarth {
   case class AddHobbit(name: String)
   case class AddWizard(name: String)
   case class HobbitTeam(team: List[String])
+  case class Wizzards(team: List[String])
   case object GetHobbitTeam
+  case object GetWizzards
 }

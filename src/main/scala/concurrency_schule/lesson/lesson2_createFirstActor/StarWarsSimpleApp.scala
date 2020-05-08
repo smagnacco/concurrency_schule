@@ -1,6 +1,7 @@
 package concurrency_schule.lesson.lesson2_createFirstActor
 
 
+import akka.actor.ActorRef
 import concurrency_schule.lesson.lesson2_createFirstActor.GeorgeLucas.Create
 import util.SimpleLog
 import akka.pattern.ask
@@ -12,15 +13,15 @@ import scala.util.{Failure, Success}
 object StarWarsSimpleApp extends App with SimpleLog with Ensemble with ShowName {
 
   log("Create a new actor")
-  val georgeLucasMailbox = actorSystem.actorOf(GeorgeLucas(), "georgeLucasDirector")
+  val georgeLucasMailbox: ActorRef = actorSystem.actorOf(GeorgeLucas(), "georgeLucasDirector")
 
   log("Send first message in order to create hans solo")
 
-  val eventualHanSolo = georgeLucasMailbox ? Create("Hans Solo")
+  val eventualHanSolo: Future[Any] = georgeLucasMailbox ? Create("Hans Solo")
 
   showName(eventualHanSolo)
 
-  val eventualSupermanFail = georgeLucasMailbox ? Create("Superman")
+  val eventualSupermanFail: Future[Any] = georgeLucasMailbox ? Create("Superman")
 
   showName(eventualSupermanFail)
 

@@ -6,6 +6,7 @@ import concurrency_schule.lesson.lesson2_createFirstActor.GeorgeLucas.{Create, S
 class GeorgeLucas extends Actor with ActorLogging {
   override def receive: Receive = {
     case Create(character) if character == "Hans Solo" ⇒
+      val continuation = sender()
       sender() ! StarWarsCharacter("Hans Solo")
 
     case Create(character) ⇒
