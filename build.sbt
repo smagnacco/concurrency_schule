@@ -2,27 +2,22 @@ name := "concurrency_schule"
 
 version := "0.1"
 
-scalaVersion := "2.13.0"
+scalaVersion := "2.13.8"
 
 resolvers ++= Seq(
-  "Nexus despegar" at "http://nexus.despegar.it:8080/nexus/content/groups/public/",
-  "Nexus despegar miami" at "http://nexus:8080/nexus/content/groups/public/",
   Resolver.jcenterRepo,
-  Resolver.sonatypeRepo("releases"),
-  Resolver.sonatypeRepo("snapshots"),
   Resolver.typesafeRepo("releases"),
-  Resolver.bintrayRepo("kamon-io", "releases"),
-  Resolver.bintrayRepo("kamon-io", "snapshots"),
   Resolver.bintrayRepo("outworkers", "oss-releases")
 )
 
-val akkaVersion       = "2.5.23"
+val akkaVersion = "2.6.19"  // 2.6 is the latest free version
 val akkaHttpVersion   = "10.1.8"
 
 libraryDependencies ++= {
   Seq(
     //AKKA
     "com.typesafe.akka"             %% "akka-actor"                        % akkaVersion,
+    "com.typesafe.akka"             %% "akka-actor-typed"                  % akkaVersion,
     "com.typesafe.akka"             %% "akka-testkit"                      % akkaVersion,
 
     //AKKA HTTP

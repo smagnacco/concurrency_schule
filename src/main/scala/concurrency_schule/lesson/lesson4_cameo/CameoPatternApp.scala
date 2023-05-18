@@ -36,6 +36,7 @@ object CameoPatternApp extends App {
 }
 
 import akka.pattern.ask
+
 class CameoExampleApp()(implicit actorSystem: ActorSystem) {
   implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val to: Timeout = Timeout(1 seconds)
@@ -52,6 +53,7 @@ class Cameo extends Actor {
   var first: Option[String] = None
   var second: Option[String] = None
   var continuation: Option[ActorRef] = None
+
   context.system.scheduler.scheduleOnce(80 milliseconds, self, Finished)
 
   override def receive: Receive = {
